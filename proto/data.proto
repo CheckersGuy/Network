@@ -1,0 +1,11 @@
+syntax = "proto3";
+package Train;
+
+message Point {
+    repeated float input = 1;
+    repeated float output = 2;
+}
+
+message Data {
+    repeated Point data = 1;
+}
