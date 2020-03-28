@@ -11,6 +11,28 @@
 
 namespace Utils {
 
+    struct HyperBolic {
+        template<typename Iter, typename Out>
+        static void apply(Iter begin, Iter end, Out out) {
+            using Type = typename std::iterator_traits<Iter>::value_type;
+            static_assert(std::is_same<float, Type>::value);
+            std::transform(begin, end, out, [](float value) {
+                return std::tanh(value);
+            });
+        }
+
+
+        template<typename Iter, typename Out>
+        static void apply_deriv(Iter begin, Iter end, Out out) {
+            using Type = typename std::iterator_traits<Iter>::value_type;
+            static_assert(std::is_same<float, Type>::value);
+            std::transform(begin, end, out, [](float value) {
+                float sig = std::tanh(value);
+                return 1.0f - sig * sig;
+            });
+        }
+    };
+
 
     struct Sigmoid {
         template<typename Iter, typename Out>
@@ -24,7 +46,7 @@ namespace Utils {
         }
 
 
-        template<typename Iter, typename Out = Iter>
+        template<typename Iter, typename Out>
         static void apply_deriv(Iter begin, Iter end, Out out) {
             using Type = typename std::iterator_traits<Iter>::value_type;
             static_assert(std::is_same<float, Type>::value);
@@ -59,14 +81,14 @@ namespace Utils {
         }
 
 
-        template<typename Iter, typename Out = Iter>
+        template<typename Iter, typename Out>
         static void apply_deriv(Iter begin, Iter end, Out out) {
 
         }
     };
 
     struct Relu {
-        template<typename Iter, typename Out = Iter>
+        template<typename Iter, typename Out>
         static void apply(Iter begin, Iter end, Out out) {
             using Type = typename std::iterator_traits<Iter>::value_type;
             static_assert(std::is_same<float, Type>::value);
@@ -76,7 +98,7 @@ namespace Utils {
         }
 
 
-        template<typename Iter, typename Out = Iter>
+        template<typename Iter, typename Out>
         static void apply_deriv(Iter begin, Iter end, Out out) {
             using Type = typename std::iterator_traits<Iter>::value_type;
             static_assert(std::is_same<float, Type>::value);
@@ -118,6 +140,31 @@ namespace Utils {
     };
 
     struct CrossLoss {
+        template<typename Iter, typename Iter2>
+        static float apply(Iter net_output, Iter net_end, Iter2 act_output) {
+            float summe = 0;
+            auto out_iter = act_output;
+            for (auto it = net_output; it != net_end;
+                 ++it) {
+                float net = *it;
+                float out = *out_iter;
+                summe += (net - out) * (net - out);
+                out_iter++;
+            }
+            return summe / 2.0f;
+        }
+
+        template<typename Iter, typename Iter2, typename OutIter>
+        static void apply_deriv(Iter net_output, Iter net_end, Iter2 act_output, OutIter out) {
+            auto a_out = act_output;
+            for (auto it = net_output; it != net_end; ++it) {
+                float p = *a_out;
+                float y = *it;
+                *out = y - p;
+                out++;
+                a_out++;
+            }
+        }
 
     };
 

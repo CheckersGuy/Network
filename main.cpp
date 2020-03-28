@@ -57,13 +57,15 @@ int main(int argl, const char **argc) {
     input[0] = 1;
     input[1] = 0;
     Network net(2);
-    net.add_layer<Utils::Relu>(6);
-    net.add_layer<Utils::Relu>(6);
+    net.add_layer<Utils::Relu>(4);
+    net.add_layer<Utils::Relu>(4);
     net.add_layer<Utils::Sigmoid>(1);
 
-    net.train<Utils::SquareLoss>(data, 0.5f, 4);
+    net.init_weights();
 
-    net.forward_pass(&input[0]);
+    net.train<Utils::SquareLoss>(data, 0.2f, 1020);
+
+    net.forward_pass(input.data());
 
 
 
@@ -76,10 +78,12 @@ int main(int argl, const char **argc) {
     std::cout<<std::endl;
     float output = net.get_output_layer().post_activ.get()[0];
 
-    std::cout<<output<<std::endl;
+    std::cout<<std::setprecision(100)<<output<<std::endl;
 
 
     std::cout<<std::endl;
+
+
 
 
     return 0;
