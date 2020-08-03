@@ -5,7 +5,7 @@
 #include <fstream>
 #include <fstream>
 #include "cmake-build-debug/data.pb.h"
-#include <opencv2/opencv.hpp>
+//#include <opencv2/opencv.hpp>
 
 int reverseInt(int i) {
     unsigned char c1, c2, c3, c4;
@@ -55,7 +55,7 @@ int main(int argl, const char **argc) {
     auto t1 = std::chrono::high_resolution_clock::now();
     std::vector<float> input(2, 0);
     input[0] = 1;
-    input[1] = 0;
+    input[1] = 1;
     Network net(2);
     net.add_layer<Utils::Relu>(4);
     net.add_layer<Utils::Relu>(4);
@@ -78,7 +78,7 @@ int main(int argl, const char **argc) {
     std::cout<<std::endl;
     float output = net.get_output_layer().post_activ.get()[0];
 
-    std::cout<<std::setprecision(100)<<output<<std::endl;
+    std::cout<<output<<std::endl;
 
 
     std::cout<<std::endl;
